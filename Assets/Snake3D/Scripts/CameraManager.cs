@@ -17,7 +17,7 @@ public class CameraManager : MonoBehaviour
     void AdjustCameraSize()
     {
         // Assuming the grid object has been centered
-        GridManager gridManager = targetGrid.GetComponent<GridManager>();
+        Grid gridManager = targetGrid.GetComponent<Grid>();
         if (gridManager == null) return;
 
         // Get grid width and height
