@@ -45,6 +45,21 @@ public class Grid : MonoBehaviour
             // snake.Move();
         };
     }
+    
+    void OnEnable()
+    {
+        Fruit.OnFruitEaten += HandleFruitEaten; // Olayı dinlemeye başla
+    }
+
+    void OnDisable()
+    {
+        Fruit.OnFruitEaten -= HandleFruitEaten; // Olayı dinlemeyi bırak
+    }
+    
+    private void HandleFruitEaten()
+    {
+        createItemOnRandomCell(applePrefab); // Meyve yendiğinde yeni bir item yarat
+    }
 
     private void GenerateGrid()
     {
@@ -58,20 +73,64 @@ public class Grid : MonoBehaviour
             cell.Init(x, z, this);
             grid[x, z] = cell;
         }
-        createItem(grid[gridWidth-1,gridHeight-1], applePrefab);
+        // createItem(grid[gridWidth-1,gridHeight-1], applePrefab);
+        createItemOnRandomCell(applePrefab);
     }
+    
 
     public void createItem(Cell cell, GameObject item)
     {
-        if (cell.GetItem() == null)
+        if (IsCellEmpty(cell))
         {
             GameObject itemObject = Instantiate(item, transform);
             itemObject.name = "Apple";
-            
+
             cell.PlaceItem(itemObject.GetComponent<CellItem>());
 
         }
     }
+    
+    public void createItemOnRandomCell(GameObject item)
+    {
+        if (IsThereAnyEmptyCell())
+        {
+            Cell cell = getRandomEmptyCell();
+            createItem(cell, item);
+        }
+        else
+        {
+            Debug.Log("There's no empty cell");
+        }
+   
+    }
+
+    private Cell getRandomEmptyCell()
+    {
+        Cell randomCell = grid[Random.Range(0, gridWidth), Random.Range(0, gridHeight)];
+        while (!IsCellEmpty(randomCell))
+        {
+            randomCell = grid[Random.Range(0, gridWidth), Random.Range(0, gridHeight)];
+        }
+        return randomCell;
+    }
+
+    private bool IsCellEmpty(Cell cell)
+    {
+        return cell.GetItem() == null;
+    }
+    private bool IsThereAnyEmptyCell()
+    {
+        for (var x = 0; x < gridWidth; x++)
+        for (var z = 0; z < gridHeight; z++)
+        {
+            if (IsCellEmpty(grid[x, z]))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    
 
     private void CenterGrid()
     {

@@ -14,7 +14,7 @@ public class SnakeBodyPart : CellItem
 
     public override void TryEat()
     {
-        Debug.Log("You can't eat this body!");
+        Debug.Log("You can't eat your body!");
     }
 
     public IEnumerator Move(Vector3 position, Quaternion rotation )
