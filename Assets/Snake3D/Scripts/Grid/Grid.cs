@@ -1,4 +1,6 @@
 using Snake3D.Game;
+using Snake3D.Grid;
+using Snake3D.Item;
 using UnityEngine;
 
 public class Grid : MonoBehaviour
@@ -7,10 +9,12 @@ public class Grid : MonoBehaviour
     public int gridHeight;
     public Cell[] gridCellPrefab;
     [SerializeField] private Snake snakePrefab;
+    [SerializeField] private GameObject applePrefab;
     
     public Snake snake;
 
     public Vector3 gridOffset = Vector3.zero;
+    public Vector3 itemOffset = Vector3.up;
 
     public float tickTimer;
     private Cell[,] grid;
@@ -18,13 +22,13 @@ public class Grid : MonoBehaviour
     private void Start()
     {
         grid = new Cell[gridWidth, gridHeight];
+        
         GenerateGrid();
         CenterGrid();
 
         TickSystem.Init();
-
-        
         TickSystem.tickTimerMax = tickTimer;
+        
         
         snake = Instantiate(snakePrefab, transform);
         snake.name = "Snake";
@@ -33,7 +37,6 @@ public class Grid : MonoBehaviour
         // snake.snakeHead.setCell(grid[1,0]);
         // snake.snakeTail.setCell(grid[0,0]);
         snake.Init(grid[0,1], grid[0,0]);
-            
         
         TickSystem.OnTick += delegate(object sender, TickSystem.OnTickEventArgs args)
         {
@@ -54,6 +57,19 @@ public class Grid : MonoBehaviour
 
             cell.Init(x, z, this);
             grid[x, z] = cell;
+        }
+        createItem(grid[gridWidth-1,gridHeight-1], applePrefab);
+    }
+
+    public void createItem(Cell cell, GameObject item)
+    {
+        if (cell.GetItem() == null)
+        {
+            GameObject itemObject = Instantiate(item, transform);
+            itemObject.name = "Apple";
+            
+            cell.PlaceItem(itemObject.GetComponent<CellItem>());
+
         }
     }
 

@@ -11,8 +11,16 @@ using UnityEngine;
         
         public int X { get => x; }
         public int Z { get => z; }
+
+        public Vector3 itemPlacementPosition
+        {
+            get
+            {
+                return transform.localPosition + Vector3.up;;
+            }
+        }
         
-        public List<Cell> Neighbours;
+        // public List<Cell> Neighbours;
 
         private CellItem item;
         
@@ -28,9 +36,12 @@ using UnityEngine;
             // itemTransform.position += Vector3.up;
         }
 
+        
+        
         public void SetItem(CellItem item)
         {
             this.item = item;
+            this.item.setCell(this);
         }
 
         public CellItem GetItem()
@@ -41,5 +52,11 @@ using UnityEngine;
         public Cell GetNeighbourWithDirection(Direction direction)
         {
             return grid.GetNeighbourWithDirection(this, direction);
+        }
+
+        public void PlaceItem(CellItem item)
+        {
+            item.transform.localPosition = itemPlacementPosition + item.itemOffset;
+            SetItem(item);
         }
     }

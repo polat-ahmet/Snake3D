@@ -6,13 +6,17 @@ using UnityEngine;
 
 public class SnakeBodyPart : CellItem
 {
-    // next
-    // before
-    // prefab
-
+    public SnakeBodyPart beforePart;
+    public SnakeBodyPart afterPart;
+    
+    public Cell beforeCell;
     private Direction direction;
 
-   
+    public override void TryEat()
+    {
+        Debug.Log("You can't eat this body!");
+    }
+
     public IEnumerator Move(Vector3 position, Quaternion rotation )
     {
         var elapsedTime = 0f;
@@ -32,4 +36,13 @@ public class SnakeBodyPart : CellItem
         }
         
     }
+
+    // public IEnumerator MoveToNextCell()
+    // {
+    //     var elapsedTime = 0f;
+    //     
+    //     Vector3 startPos = transform.localPosition;
+    //     Vector3 endPos = beforeCell.transform.localPosition;
+    //     
+    // }
 }

@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using Snake3D.Game;
+using Snake3D.Grid;
+using Snake3D.Item;
 using UnityEngine;
 
 public class Snake : MonoBehaviour
@@ -29,15 +31,19 @@ public class Snake : MonoBehaviour
     {
         AddHead();
         AddTail();
-        snakeHead.setCell(headCell);
+        // snakeHead.setCell(headCell);
+        headCell.SetItem(snakeHead);
         // Debug.Log("Snake Head Cell:" + snakeHead.cell.X + " , " + snakeHead.cell.Z);
-        snakeTail.setCell(tailCell);
+        // snakeTail.setCell(tailCell);
+        tailCell.SetItem(snakeTail);
         direction = Direction.Left;
         Debug.Log("direction:" + direction);
         TickSystem.OnTick += delegate(object sender, TickSystem.OnTickEventArgs args)
         {
             Debug.Log("direction:" + direction);
+            
             Cell nextCell = snakeHead.cell.GetNeighbourWithDirection(direction);
+            
             if (nextCell == null)
             {
                 Debug.Log("Dead");
@@ -45,9 +51,17 @@ public class Snake : MonoBehaviour
             }
             if (alive)
             {
+                CellItem nextItem = nextCell.GetItem();
+                if (nextItem != null) nextItem.TryEat();
+                
                 Move();
-                snakeHead.setCell(nextCell);
-                snakeTail.setCell(snakeHead.cell);
+
+                
+                
+                // snakeHead.setCell(nextCell);
+                nextCell.SetItem(snakeHead);
+                // snakeTail.setCell(snakeHead.cell);
+                // snakeHead.cell
             }
             
         };
@@ -73,6 +87,11 @@ public class Snake : MonoBehaviour
         {
             direction = Direction.Right;
         }
+    }
+
+    public void grow(int amount)
+    {
+        
     }
 
     // public void AddBodyPart()
@@ -117,6 +136,7 @@ public class Snake : MonoBehaviour
         }
     }
 
+    //TODO move snake movement
     public Vector3 getDirectionVector()
     {
         switch (direction)
@@ -134,6 +154,7 @@ public class Snake : MonoBehaviour
         }
     }
     
+    //TODO move snake movement
     public Vector3 getRotationVector()
     {
         switch (direction)
@@ -151,6 +172,7 @@ public class Snake : MonoBehaviour
         }
     }
 
+    //TODO move snake movement
     public void Move()
     {
         List<IEnumerator> coroutineList = new List<IEnumerator>();
