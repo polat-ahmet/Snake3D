@@ -6,22 +6,4 @@ using UnityEngine;
 public class SnakeMover : MonoBehaviour
 {
     
-    // IEnumerator move(Cell source, Cell target)
-    // {
-        // while (true)
-        // {
-        //     Vector3 startPos = transform.localPosition;
-        //     Vector3 endPos = startPos + Vector3.forward; //TODO + direction 
-        //     float travelPercent = 0f;
-        //     while (travelPercent < 1f)
-        //     {
-        //         travelPercent += Time.deltaTime * speed;
-        //         transform.localPosition = Vector3.Lerp(startPos, endPos, travelPercent);
-        //         yield return new WaitForEndOfFrame();
-        //     }
-        //     yield return new WaitForSeconds(0.1f);
-        // }
-        
-        
-    // }
 }

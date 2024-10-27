@@ -10,7 +10,6 @@ namespace Snake3D.Grid
         public void setCell(Cell cell)
         {
             this.cell = cell;
-            // this.cell.SetItem(this);
         }
 
         public abstract void TryEat();

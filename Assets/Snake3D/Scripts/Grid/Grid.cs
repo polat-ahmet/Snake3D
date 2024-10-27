@@ -32,19 +32,12 @@ public class Grid : MonoBehaviour
         
         snake = Instantiate(snakePrefab, transform);
         snake.name = "Snake";
-        // snakeBody.Add(snakeTail);
-        // snake.transform.position += Vector3.forward;
-        // snake.snakeHead.setCell(grid[1,0]);
-        // snake.snakeTail.setCell(grid[0,0]);
         snake.Init(grid[0,1], grid[0,0], Direction.Left);
         
         
         
         TickSystem.OnTick += delegate(object sender, TickSystem.OnTickEventArgs args)
         {
-            // Debug.Log("Tick:" + args.tick);
-            // Debug.Log("Tick:" + args.tick);
-            // snake.Move();
         };
     }
     
@@ -76,8 +69,6 @@ public class Grid : MonoBehaviour
             cell.Init(x, z, this);
             grid[x, z] = cell;
         }
-        // createItem(grid[gridWidth-1,gridHeight-1], applePrefab);
-        // createItemOnRandomCell(applePrefab);
         createItem(grid[3,3], applePrefab);
     }
     

@@ -20,12 +20,8 @@ using UnityEngine;
                 return transform.localPosition + Vector3.up;
             }
         }
-        
-        // public List<Cell> Neighbours;
 
         [CanBeNull] private CellItem item;
-        
-        // public Transform itemTransform;
         
         public void Init(int x, int z, Grid grid)
         {
@@ -33,11 +29,7 @@ using UnityEngine;
             this.z = z;
             item = null;
             this.grid = grid;
-            // itemTransform = transform;
-            // itemTransform.position += Vector3.up;
         }
-
-        
         
         public void SetItem(CellItem item)
         {

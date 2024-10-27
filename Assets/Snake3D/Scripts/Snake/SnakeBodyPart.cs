@@ -30,27 +30,7 @@ public class SnakeBodyPart : CellItem
     {
         Debug.Log("You can't eat your body!");
     }
-
-    // public IEnumerator Move(Vector3 position, Quaternion rotation )
-    // {
-    //     var elapsedTime = 0f;
-    //
-    //     Vector3 startPos = transform.localPosition;
-    //     Vector3 endPos = position;
-    //     
-    //     transform.rotation = rotation;
-    //     
-    //     while (elapsedTime < TickSystem.tickTimerMax)
-    //     {
-    //        
-    //         elapsedTime += Time.deltaTime;
-    //         transform.localPosition = Vector3.Lerp(startPos, endPos, elapsedTime/TickSystem.tickTimerMax);
-    //         
-    //         yield return new WaitForEndOfFrame();
-    //     }
-    //     
-    // }
-
+    
     public IEnumerator MoveToNextCell()
     {
         if (isReadyToMove)
@@ -69,12 +49,7 @@ public class SnakeBodyPart : CellItem
             nextCell = cell.GetNeighbourWithDirection(direction);
             
             direction = nextDirection;
-            
-            // if (beforePart != null)
-            // {
-            //     nextDirection = beforePart.direction;
-            // }
-            //
+
             var elapsedTime = 0f;
             while (elapsedTime < TickSystem.tickTimerMax)
             {
@@ -87,15 +62,6 @@ public class SnakeBodyPart : CellItem
             }
             
         }
-        // var lastPosition = transform.localPosition;
-        // Vector3 endPos = lastHeadPosition + getDirectionVector();
-        
-        // var lastRotation = transform.localEulerAngles;
-        //
-        // lastRotation.x = 0;
-        // lastRotation.z = 0;
-            
-        // coroutineList.Add(snakeHead.Move(endPos, Quaternion.Euler(getRotationVector())));
     }
     
     //TODO move snake movement

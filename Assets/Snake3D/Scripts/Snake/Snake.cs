@@ -50,9 +50,6 @@ public class Snake : MonoBehaviour
         AddHead(headCell, startDirection);
         AddTail(tailCell, startDirection);
         
-        // snakeHead.direction = startDirection;
-        // snakeHead.nextCell = snakeHead.cell.GetNeighbourWithDirection(snakeHead.direction);
-        
         TickSystem.OnTick += delegate(object sender, TickSystem.OnTickEventArgs args)
         {
             //TODO move to game manager
@@ -152,7 +149,6 @@ public class Snake : MonoBehaviour
         
         createSnakeBodyPartModel.Init(cell, direction);
         AddBodyRequest();
-        // AddBodyPart();
     }
 
     public void AddBodyPartNextTo(SnakeBodyPart beforePart, SnakeBodyPart afterPart)
@@ -163,31 +159,6 @@ public class Snake : MonoBehaviour
 
     public void AddBodyPart()
     {
-        // if (snakeTail == null)
-        // {
-        //     Cell cell = snakeHead.cell.GetNeighbourWithDirection(snakeHead.GetReverseDirection());
-        //     snakeTail = CreateTailPart(cell, snakeHead.direction);
-        //     AddBodyPartNextTo(snakeHead, snakeTail);
-        // }
-        // else
-        // {
-            // SnakeBodyPart lastBodyPart = snakeTail.beforePart;
-            // Cell cell = lastBodyPart.cell;
-            // // lastBodyPart.afterPart = null;
-            // Direction direction = lastBodyPart.direction;
-            // SnakeBodyPart body = CreateBodyPart(cell, direction);
-            // AddBodyPartNextTo(lastBodyPart, body);
-            // AddBodyPartNextTo(body, snakeTail);
-            // snakeTail.isReadyToMove = false;
-            // body.isReadyToMove = false;
-            //
-            // Debug.Log("Start adding to snake body");
-            //
-            // yield return WaitForNextTick();
-            // Debug.Log("Added");
-            // snakeTail.isReadyToMove = true;
-            // body.isReadyToMove = true;
-
             SnakeBodyPart lastBodyPart = snakeTail.beforePart;
             
             Cell cell = createSnakeBodyPartModel.cell;
@@ -201,25 +172,6 @@ public class Snake : MonoBehaviour
 
         // }
     }
-    
-    private IEnumerator WaitForNextTick()
-    {
-        bool tickOccurred = false;
-
-        void OnTickHandler(object sender, TickSystem.OnTickEventArgs e)
-        {
-            Debug.Log("TickOccurred");
-            tickOccurred = true;
-        }
-
-        TickSystem.OnTick += OnTickHandler;
-
-        // Wait until the tickOccurred is true
-        yield return new WaitUntil(() => tickOccurred);
-
-        TickSystem.OnTick -= OnTickHandler;
-    }
-
 
     public void AddTail(Cell tailCell, Direction direction)
     {
@@ -230,11 +182,7 @@ public class Snake : MonoBehaviour
     public SnakeBodyPart CreateTailPart(Cell cell, Direction direction)
     {
             SnakeBodyPart body = Instantiate(tailPrefab, transform);
-                // Instantiate(tailPrefab,
-                // snakeHead.transform.position - (snakeHead.transform.forward * stepSize).normalized,
-                // snakeHead.transform.rotation);
             body.name = "Tail";
-            // snakeBody.Add(snakeTail);
             body.transform.parent = transform;
             body.transform.localPosition = cell.GetItemPlacementPosition(body);
             body.Init(cell, direction);
@@ -243,11 +191,7 @@ public class Snake : MonoBehaviour
     public SnakeBodyPart CreateBodyPart(Cell cell, Direction direction)
     {
         SnakeBodyPart body = Instantiate(bodyPrefab, transform);
-        // Instantiate(tailPrefab,
-        // snakeHead.transform.position - (snakeHead.transform.forward * stepSize).normalized,
-        // snakeHead.transform.rotation);
         body.name = "Body";
-        // snakeBody.Add(snakeTail);
         body.transform.parent = transform;
         body.transform.localPosition = cell.GetItemPlacementPosition(body);
         body.Init(cell, direction);
@@ -268,133 +212,5 @@ public class Snake : MonoBehaviour
             snakeHead.Init(headCell, direction);
         }
     }
-
     
-
-    //TODO move snake movement
-    // public void Move()
-    // {
-    //     List<IEnumerator> coroutineList = new List<IEnumerator>();
-    //         
-    //     var lastHeadPosition = snakeHead.transform.localPosition;
-    //     Vector3 endPos = lastHeadPosition + getDirectionVector();
-    //     
-    //     var lastHeadRotation = snakeHead.transform.localEulerAngles;
-    //
-    //     lastHeadRotation.x = 0;
-    //     lastHeadRotation.z = 0;
-    //         
-    //     coroutineList.Add(snakeHead.Move(endPos, Quaternion.Euler(getRotationVector())));
-    //         
-    //     // var lastBodyPosition = lastHeadPosition;
-    //     // var lastBodyRotation = Quaternion.Euler(lastHeadRotation);
-    //     //     
-    //     // for (var i = 0; i < snakeBody.Count; i++)
-    //     // {
-    //     //     var currentBodyPosition = snakeBody[i].transform.localPosition;
-    //     //     var currentBodyRotation = snakeBody[i].transform.rotation;
-    //     //         
-    //     //     coroutineList.Add(snakeBody[i].Move(lastBodyPosition, lastBodyRotation));
-    //     //
-    //     //     lastBodyPosition = currentBodyPosition;
-    //     //     lastBodyRotation = currentBodyRotation;
-    //     // }
-    //     // coroutineList.Add(snakeTail.Move(lastBodyPosition, lastBodyRotation));
-    //         
-    //     foreach (IEnumerator coroutine in coroutineList)
-    //     {
-    //         StartCoroutine(coroutine);
-    //     }
-    // }
-
-    // private void MoveSnakeEachTick()
-    // {
-    //     var lastHeadPosition = snakeHead.transform.position;
-    //     var lastHeadRotation = snakeHead.transform.localEulerAngles;
-    //
-    //     lastHeadRotation.x = 0;
-    //     lastHeadRotation.z = 0;
-    //
-    //     snakeHead.transform.position += snakeHead.transform.forward * stepSpeed;
-    //
-    //     // snakeHead.transform.localPosition = Vector3.Lerp(startPos, endPos, travelPercent);
-    //
-    //     var lastBodyPosition = lastHeadPosition;
-    //     var lastBodyRotation = Quaternion.Euler(lastHeadRotation);
-    //
-    //     if (snakeBody.Count > 0)
-    //         for (var i = 0; i < snakeBody.Count; i++)
-    //         {
-    //             var currentBodyPosition = snakeBody[i].transform.position;
-    //             var currentBodyRotation = snakeBody[i].transform.rotation;
-    //
-    //             snakeBody[i].transform.position = lastBodyPosition;
-    //             snakeBody[i].transform.rotation = lastBodyRotation;
-    //
-    //             lastBodyPosition = currentBodyPosition;
-    //             lastBodyRotation = currentBodyRotation;
-    //         }
-    //
-    //     snakeTail.transform.position = lastBodyPosition;
-    //     snakeTail.transform.rotation = lastBodyRotation;
-    // }
-
-    // private IEnumerator MoveSnake()
-    // {
-    //     var elapsedTime = 0f;
-    //     while (alive)
-    //     {
-    //         elapsedTime += Time.deltaTime;
-    //         if (elapsedTime >= stepSpeed)
-    //         {
-    //             // Vector3 startPos = snakeHead.transform.localPosition;
-    //             // Vector3 endPos = startPos + snakeHead.transform.forward;
-    //             //
-    //             // float travelPercent = 0f;
-    //             // while (travelPercent < 1f)
-    //             // {
-    //             //     travelPercent += Time.deltaTime;
-    //
-    //
-    //             // transform.localPosition = Vector3.Lerp(startPos, endPos, travelPercent);
-    //
-    //             var lastHeadPosition = snakeHead.transform.position;
-    //             var lastHeadRotation = snakeHead.transform.localEulerAngles;
-    //
-    //             lastHeadRotation.x = 0;
-    //             lastHeadRotation.z = 0;
-    //
-    //             snakeHead.transform.position += snakeHead.transform.forward * stepSpeed;
-    //
-    //             // snakeHead.transform.localPosition = Vector3.Lerp(startPos, endPos, travelPercent);
-    //
-    //             var lastBodyPosition = lastHeadPosition;
-    //             var lastBodyRotation = Quaternion.Euler(lastHeadRotation);
-    //
-    //             if (snakeBody.Count > 0)
-    //                 for (var i = 0; i < snakeBody.Count; i++)
-    //                 {
-    //                     var currentBodyPosition = snakeBody[i].transform.position;
-    //                     var currentBodyRotation = snakeBody[i].transform.rotation;
-    //
-    //                     snakeBody[i].transform.position = lastBodyPosition;
-    //                     snakeBody[i].transform.rotation = lastBodyRotation;
-    //
-    //                     lastBodyPosition = currentBodyPosition;
-    //                     lastBodyRotation = currentBodyRotation;
-    //                 }
-    //
-    //             snakeTail.transform.position = lastBodyPosition;
-    //             snakeTail.transform.rotation = lastBodyRotation;
-    //
-    //             elapsedTime = 0;
-    //
-    //
-    //             //     yield return new WaitForEndOfFrame();
-    //             // }
-    //         }
-    //
-    //         yield return null;
-    //     }
-    // }
 }
