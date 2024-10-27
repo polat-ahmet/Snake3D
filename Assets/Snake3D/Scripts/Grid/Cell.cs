@@ -61,6 +61,6 @@ using UnityEngine;
 
         public Vector3 GetItemPlacementPosition(CellItem item)
         {
-            return itemPlacementPosition + item.itemOffset;
+            return itemPlacementPosition + item.GetItemOffset();
         }
     }

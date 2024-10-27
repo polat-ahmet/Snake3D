@@ -17,8 +17,13 @@ public class SnakeBodyPart : CellItem
     public bool isReadyToMove = true;
     void Awake()
     {
-        itemOffset = new Vector3(0, -.25f, 0);
+        itemOffsetY = new Vector3(0, -.25f, 0);
     }
+
+    // public Vector3 GetItemOffset()
+    // {
+    //     
+    // }
 
     public void Init(Cell cell, Direction direction)
     {

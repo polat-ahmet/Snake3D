@@ -221,6 +221,7 @@ public class Snake : MonoBehaviour
             //TODO remove object pool
             snakeHead = Instantiate(headPrefab, transform);
             snakeHead.name = "Head";
+            // snakeHead.itemOffset = new Vector3(0, -.25f, 0.15f);
             
             snakeHead.transform.parent = transform;
             

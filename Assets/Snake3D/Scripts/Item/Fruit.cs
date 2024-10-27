@@ -8,7 +8,7 @@ namespace Snake3D.Item
         public static event System.Action OnFruitEaten;
         void Awake()
         {
-            itemOffset = new Vector3(0, -.25f, 0);
+            itemOffsetY = new Vector3(0, -.25f, 0);
         }
          
         public override void TryEat()

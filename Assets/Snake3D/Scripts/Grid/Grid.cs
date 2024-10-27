@@ -39,7 +39,7 @@ public class Grid : MonoBehaviour
         snake.name = "Snake";
         
         //TODO start grid, start direction
-        snake.Init(grid[0,1], grid[0,0], Direction.Left);
+        snake.Init(grid[3,3], grid[3,2], Direction.Left);
         
         
         TickSystem.OnTick += delegate(object sender, TickSystem.OnTickEventArgs args)
@@ -88,7 +88,7 @@ public class Grid : MonoBehaviour
             cell.Init(x, z, this);
             grid[x, z] = cell;
         }
-        createItem(grid[3,3], applePrefab);
+        createItemOnRandomCell(applePrefab);
     }
     
 
