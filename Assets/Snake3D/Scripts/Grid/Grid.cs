@@ -33,10 +33,12 @@ public class Grid : MonoBehaviour
         snake = Instantiate(snakePrefab, transform);
         snake.name = "Snake";
         // snakeBody.Add(snakeTail);
-        snake.transform.position += Vector3.forward;
+        // snake.transform.position += Vector3.forward;
         // snake.snakeHead.setCell(grid[1,0]);
         // snake.snakeTail.setCell(grid[0,0]);
-        snake.Init(grid[0,1], grid[0,0]);
+        snake.Init(grid[0,1], grid[0,0], Direction.Left);
+        
+        
         
         TickSystem.OnTick += delegate(object sender, TickSystem.OnTickEventArgs args)
         {
@@ -48,17 +50,18 @@ public class Grid : MonoBehaviour
     
     void OnEnable()
     {
-        Fruit.OnFruitEaten += HandleFruitEaten; // Olayı dinlemeye başla
+        Fruit.OnFruitEaten += HandleFruitEaten;
     }
 
     void OnDisable()
     {
-        Fruit.OnFruitEaten -= HandleFruitEaten; // Olayı dinlemeyi bırak
+        Fruit.OnFruitEaten -= HandleFruitEaten;
     }
     
     private void HandleFruitEaten()
     {
-        createItemOnRandomCell(applePrefab); // Meyve yendiğinde yeni bir item yarat
+        snake.AddGrowRequest();
+        createItemOnRandomCell(applePrefab);
     }
 
     private void GenerateGrid()
@@ -74,7 +77,8 @@ public class Grid : MonoBehaviour
             grid[x, z] = cell;
         }
         // createItem(grid[gridWidth-1,gridHeight-1], applePrefab);
-        createItemOnRandomCell(applePrefab);
+        // createItemOnRandomCell(applePrefab);
+        createItem(grid[3,3], applePrefab);
     }
     
 

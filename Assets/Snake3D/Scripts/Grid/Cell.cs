@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using Snake3D.Grid;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -16,13 +17,13 @@ using UnityEngine;
         {
             get
             {
-                return transform.localPosition + Vector3.up;;
+                return transform.localPosition + Vector3.up;
             }
         }
         
         // public List<Cell> Neighbours;
 
-        private CellItem item;
+        [CanBeNull] private CellItem item;
         
         // public Transform itemTransform;
         
@@ -41,12 +42,18 @@ using UnityEngine;
         public void SetItem(CellItem item)
         {
             this.item = item;
-            this.item.setCell(this);
+            this.item?.setCell(this);
         }
 
         public CellItem GetItem()
         {
             return item;
+        }
+
+        public void RemoveItem()
+        {
+            this.item?.setCell(null);
+            item = null;
         }
         
         public Cell GetNeighbourWithDirection(Direction direction)
@@ -56,7 +63,12 @@ using UnityEngine;
 
         public void PlaceItem(CellItem item)
         {
-            item.transform.localPosition = itemPlacementPosition + item.itemOffset;
+            item.transform.localPosition = GetItemPlacementPosition(item);
             SetItem(item);
+        }
+
+        public Vector3 GetItemPlacementPosition(CellItem item)
+        {
+            return itemPlacementPosition + item.itemOffset;
         }
     }

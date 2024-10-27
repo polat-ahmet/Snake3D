@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Snake3D.Game;
 using Snake3D.Grid;
 using Snake3D.Item;
+using Snake3D.Snake;
 using UnityEngine;
 
 public class Snake : MonoBehaviour
@@ -20,193 +21,291 @@ public class Snake : MonoBehaviour
     public SnakeBodyPart snakeHead;
     public SnakeBodyPart snakeTail;
 
-    public Direction direction;
+    public Direction startDirection;
+    
+    public bool lockInput = false;
+    
+    private Queue<System.Action> growRequests = new Queue<System.Action>();
+    private Queue<System.Action> addBodyRequests = new Queue<System.Action>();
+    
+    private SnakeBodyPartModel createSnakeBodyPartModel = new SnakeBodyPartModel();
 
     private void Start()
     {
         
     }
-
-    public void Init(Cell headCell, Cell tailCell)
+    
+    public void AddGrowRequest()
     {
-        AddHead();
-        AddTail();
-        // snakeHead.setCell(headCell);
-        headCell.SetItem(snakeHead);
-        // Debug.Log("Snake Head Cell:" + snakeHead.cell.X + " , " + snakeHead.cell.Z);
-        // snakeTail.setCell(tailCell);
-        tailCell.SetItem(snakeTail);
-        direction = Direction.Left;
-        Debug.Log("direction:" + direction);
+        growRequests.Enqueue(() => grow());
+    }
+    
+    public void AddBodyRequest()
+    {
+        addBodyRequests.Enqueue(() => AddBodyPart());
+    }
+
+    public void Init(Cell headCell, Cell tailCell, Direction startDirection)
+    {
+        AddHead(headCell, startDirection);
+        AddTail(tailCell, startDirection);
+        
+        // snakeHead.direction = startDirection;
+        // snakeHead.nextCell = snakeHead.cell.GetNeighbourWithDirection(snakeHead.direction);
+        
         TickSystem.OnTick += delegate(object sender, TickSystem.OnTickEventArgs args)
         {
-            Debug.Log("direction:" + direction);
-            
-            Cell nextCell = snakeHead.cell.GetNeighbourWithDirection(direction);
-            
-            if (nextCell == null)
-            {
-                Debug.Log("Dead");
-                alive = false;
-            }
-            if (alive)
-            {
-                CellItem nextItem = nextCell.GetItem();
-                if (nextItem != null) nextItem.TryEat();
-                
-                Move();
-
-                
-                
-                // snakeHead.setCell(nextCell);
-                nextCell.SetItem(snakeHead);
-                // snakeTail.setCell(snakeHead.cell);
-                // snakeHead.cell
-            }
-            
+            //TODO move to game manager
+            ManuelUpdate();
         };
         
+    }
+
+    void ManuelUpdate()
+    {
+        snakeHead.nextCell = snakeHead.cell.GetNeighbourWithDirection(snakeHead.direction);
+            
+        if (snakeHead.nextCell == null)
+        {
+            Debug.Log("Dead");
+            alive = false;
+        }
+        if (alive)
+        {
+            lockInput = true;
+            
+            CellItem nextItem = snakeHead.nextCell.GetItem();
+            if (nextItem != null) nextItem.TryEat();
+                
+            // snakeHead.
+            if (growRequests.Count > 0)
+            {
+                var growRequest = growRequests.Dequeue();
+                growRequest.Invoke();
+            }   
+            // Move();
+            List<IEnumerator> coroutineList = new List<IEnumerator>();
+
+            SnakeBodyPart bodyPart = snakeHead;
+            while (bodyPart != null)
+            {
+                if (bodyPart.beforePart == null)
+                {
+                    bodyPart.nextDirection = bodyPart.direction;
+                }
+                else
+                {
+                    bodyPart.nextDirection = bodyPart.beforePart.direction;
+                }
+               
+                coroutineList.Add(bodyPart.MoveToNextCell());
+                    
+                bodyPart = bodyPart.afterPart;
+            }
+            foreach (IEnumerator coroutine in coroutineList)
+            {
+                StartCoroutine(coroutine);
+            }
+            
+            if (addBodyRequests.Count > 0)
+            {
+                var request = addBodyRequests.Dequeue();
+                request.Invoke();
+            }
+            
+            lockInput = false;
+            
+        }
     }
     
     void Update()
     {
-        // Yön değişiklikleri için input kontrolleri
-        if (Input.GetKeyDown(KeyCode.UpArrow) && direction != Direction.Down)
+        if (!lockInput)
         {
-            direction = Direction.Up;
+            
+            if (Input.GetKeyDown(KeyCode.UpArrow) && snakeHead.direction != Direction.Down)
+            {
+                snakeHead.direction = Direction.Up;
+            }
+            else if (Input.GetKeyDown(KeyCode.DownArrow) && snakeHead.direction != Direction.Up)
+            {
+                snakeHead.direction = Direction.Down;
+            }
+            else if (Input.GetKeyDown(KeyCode.LeftArrow) && snakeHead.direction != Direction.Right)
+            {
+                snakeHead.direction = Direction.Left;
+            }
+            else if (Input.GetKeyDown(KeyCode.RightArrow) && snakeHead.direction != Direction.Left)
+            {
+                snakeHead.direction = Direction.Right;
+            }
         }
-        else if (Input.GetKeyDown(KeyCode.DownArrow) && direction != Direction.Up)
-        {
-            direction = Direction.Down;
-        }
-        else if (Input.GetKeyDown(KeyCode.LeftArrow) && direction != Direction.Right)
-        {
-            direction = Direction.Left;
-        }
-        else if (Input.GetKeyDown(KeyCode.RightArrow) && direction != Direction.Left)
-        {
-            direction = Direction.Right;
-        }
-    }
-
-    public void grow(int amount)
-    {
         
     }
 
-    // public void AddBodyPart()
-    // {
-    //     if (snakeBody.Count == 0)
-    //     {
-    //         
-    //     }
-    //     
-    //     if (snakeTail == null)
-    //     {
-    //         snakeTail = Instantiate(tailPrefab,
-    //             snakeHead.transform.position - (snakeHead.transform.forward * stepSize).normalized,
-    //             snakeHead.transform.rotation);
-    //         snakeTail.name = "Tail";
-    //         // snakeBody.Add(snakeTail);
-    //         snakeTail.transform.parent = transform;
-    //     }
-    // }
-
-    public void AddTail()
+    public void grow()
     {
-        if (snakeTail == null)
-        {
-            snakeTail = Instantiate(tailPrefab,
-                snakeHead.transform.position - (snakeHead.transform.forward * stepSize).normalized,
-                snakeHead.transform.rotation);
-            snakeTail.name = "Tail";
-            // snakeBody.Add(snakeTail);
-            snakeTail.transform.parent = transform;
-        }
+        snakeTail.isReadyToMove = false;
+        SnakeBodyPart lastBodyPart = snakeTail.beforePart;
+        Cell cell = lastBodyPart.cell;
+        Direction direction = lastBodyPart.direction;
+        
+        createSnakeBodyPartModel.Init(cell, direction);
+        AddBodyRequest();
+        // AddBodyPart();
     }
 
-    public void AddHead()
+    public void AddBodyPartNextTo(SnakeBodyPart beforePart, SnakeBodyPart afterPart)
+    {
+        beforePart.afterPart = afterPart;
+        afterPart.beforePart = beforePart;
+    }
+
+    public void AddBodyPart()
+    {
+        // if (snakeTail == null)
+        // {
+        //     Cell cell = snakeHead.cell.GetNeighbourWithDirection(snakeHead.GetReverseDirection());
+        //     snakeTail = CreateTailPart(cell, snakeHead.direction);
+        //     AddBodyPartNextTo(snakeHead, snakeTail);
+        // }
+        // else
+        // {
+            // SnakeBodyPart lastBodyPart = snakeTail.beforePart;
+            // Cell cell = lastBodyPart.cell;
+            // // lastBodyPart.afterPart = null;
+            // Direction direction = lastBodyPart.direction;
+            // SnakeBodyPart body = CreateBodyPart(cell, direction);
+            // AddBodyPartNextTo(lastBodyPart, body);
+            // AddBodyPartNextTo(body, snakeTail);
+            // snakeTail.isReadyToMove = false;
+            // body.isReadyToMove = false;
+            //
+            // Debug.Log("Start adding to snake body");
+            //
+            // yield return WaitForNextTick();
+            // Debug.Log("Added");
+            // snakeTail.isReadyToMove = true;
+            // body.isReadyToMove = true;
+
+            SnakeBodyPart lastBodyPart = snakeTail.beforePart;
+            
+            Cell cell = createSnakeBodyPartModel.cell;
+            Direction direction = createSnakeBodyPartModel.direction;
+            
+            SnakeBodyPart body = CreateBodyPart(cell, direction);
+            AddBodyPartNextTo(lastBodyPart, body);
+            AddBodyPartNextTo(body, snakeTail);
+            snakeTail.isReadyToMove = true;
+            
+
+        // }
+    }
+    
+    private IEnumerator WaitForNextTick()
+    {
+        bool tickOccurred = false;
+
+        void OnTickHandler(object sender, TickSystem.OnTickEventArgs e)
+        {
+            Debug.Log("TickOccurred");
+            tickOccurred = true;
+        }
+
+        TickSystem.OnTick += OnTickHandler;
+
+        // Wait until the tickOccurred is true
+        yield return new WaitUntil(() => tickOccurred);
+
+        TickSystem.OnTick -= OnTickHandler;
+    }
+
+
+    public void AddTail(Cell tailCell, Direction direction)
+    {
+        snakeTail = CreateTailPart(tailCell, direction);
+        AddBodyPartNextTo(snakeHead, snakeTail);
+    }
+
+    public SnakeBodyPart CreateTailPart(Cell cell, Direction direction)
+    {
+            SnakeBodyPart body = Instantiate(tailPrefab, transform);
+                // Instantiate(tailPrefab,
+                // snakeHead.transform.position - (snakeHead.transform.forward * stepSize).normalized,
+                // snakeHead.transform.rotation);
+            body.name = "Tail";
+            // snakeBody.Add(snakeTail);
+            body.transform.parent = transform;
+            body.transform.localPosition = cell.GetItemPlacementPosition(body);
+            body.Init(cell, direction);
+            return body;
+    }
+    public SnakeBodyPart CreateBodyPart(Cell cell, Direction direction)
+    {
+        SnakeBodyPart body = Instantiate(bodyPrefab, transform);
+        // Instantiate(tailPrefab,
+        // snakeHead.transform.position - (snakeHead.transform.forward * stepSize).normalized,
+        // snakeHead.transform.rotation);
+        body.name = "Body";
+        // snakeBody.Add(snakeTail);
+        body.transform.parent = transform;
+        body.transform.localPosition = cell.GetItemPlacementPosition(body);
+        body.Init(cell, direction);
+        return body;
+    }
+
+    public void AddHead(Cell headCell, Direction direction)
     {
         if (snakeHead == null)
         {
+            //TODO remove object pool
             snakeHead = Instantiate(headPrefab, transform);
             snakeHead.name = "Head";
-            // snakeBody.Add(snakeHead);
+            
             snakeHead.transform.parent = transform;
+            
+            snakeHead.transform.localPosition = headCell.GetItemPlacementPosition(snakeHead);
+            snakeHead.Init(headCell, direction);
         }
     }
 
-    //TODO move snake movement
-    public Vector3 getDirectionVector()
-    {
-        switch (direction)
-        {
-            case Direction.Left:
-                return Vector3.forward;
-            case Direction.Right:
-                return Vector3.back;
-            case Direction.Up:
-                return Vector3.right;
-            case Direction.Down:
-                return Vector3.left;
-            default:
-                return Vector3.zero;
-        }
-    }
     
-    //TODO move snake movement
-    public Vector3 getRotationVector()
-    {
-        switch (direction)
-        {
-            case Direction.Left:
-                return new Vector3(0, 0, 0);
-            case Direction.Right:
-                return new Vector3(0, 180, 0);
-            case Direction.Up:
-                return new Vector3(0, 90, 0);
-            case Direction.Down:
-                return new Vector3(0, 270, 0);
-            default:
-                return Vector3.zero;
-        }
-    }
 
     //TODO move snake movement
-    public void Move()
-    {
-        List<IEnumerator> coroutineList = new List<IEnumerator>();
-            
-        var lastHeadPosition = snakeHead.transform.localPosition;
-        Vector3 endPos = lastHeadPosition + getDirectionVector();
-            
-        var lastHeadRotation = snakeHead.transform.localEulerAngles;
-
-        lastHeadRotation.x = 0;
-        lastHeadRotation.z = 0;
-            
-        coroutineList.Add(snakeHead.Move(endPos, Quaternion.Euler(getRotationVector())));
-            
-        var lastBodyPosition = lastHeadPosition;
-        var lastBodyRotation = Quaternion.Euler(lastHeadRotation);
-            
-        for (var i = 0; i < snakeBody.Count; i++)
-        {
-            var currentBodyPosition = snakeBody[i].transform.localPosition;
-            var currentBodyRotation = snakeBody[i].transform.rotation;
-                
-            coroutineList.Add(snakeBody[i].Move(lastBodyPosition, lastBodyRotation));
-
-            lastBodyPosition = currentBodyPosition;
-            lastBodyRotation = currentBodyRotation;
-        }
-        coroutineList.Add(snakeTail.Move(lastBodyPosition, lastBodyRotation));
-            
-        foreach (IEnumerator coroutine in coroutineList)
-        {
-            StartCoroutine(coroutine);
-        }
-    }
+    // public void Move()
+    // {
+    //     List<IEnumerator> coroutineList = new List<IEnumerator>();
+    //         
+    //     var lastHeadPosition = snakeHead.transform.localPosition;
+    //     Vector3 endPos = lastHeadPosition + getDirectionVector();
+    //     
+    //     var lastHeadRotation = snakeHead.transform.localEulerAngles;
+    //
+    //     lastHeadRotation.x = 0;
+    //     lastHeadRotation.z = 0;
+    //         
+    //     coroutineList.Add(snakeHead.Move(endPos, Quaternion.Euler(getRotationVector())));
+    //         
+    //     // var lastBodyPosition = lastHeadPosition;
+    //     // var lastBodyRotation = Quaternion.Euler(lastHeadRotation);
+    //     //     
+    //     // for (var i = 0; i < snakeBody.Count; i++)
+    //     // {
+    //     //     var currentBodyPosition = snakeBody[i].transform.localPosition;
+    //     //     var currentBodyRotation = snakeBody[i].transform.rotation;
+    //     //         
+    //     //     coroutineList.Add(snakeBody[i].Move(lastBodyPosition, lastBodyRotation));
+    //     //
+    //     //     lastBodyPosition = currentBodyPosition;
+    //     //     lastBodyRotation = currentBodyRotation;
+    //     // }
+    //     // coroutineList.Add(snakeTail.Move(lastBodyPosition, lastBodyRotation));
+    //         
+    //     foreach (IEnumerator coroutine in coroutineList)
+    //     {
+    //         StartCoroutine(coroutine);
+    //     }
+    // }
 
     // private void MoveSnakeEachTick()
     // {
