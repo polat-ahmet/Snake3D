@@ -60,6 +60,8 @@ public class Snake : MonoBehaviour
 
     void ManuelUpdate()
     {
+        lockInput = true;
+        
         snakeHead.nextCell = snakeHead.cell.GetNeighbourWithDirection(snakeHead.direction);
             
         if (snakeHead.nextCell == null)
@@ -67,13 +69,21 @@ public class Snake : MonoBehaviour
             Debug.Log("Dead");
             alive = false;
         }
+            
+        CellItem nextItem = snakeHead.nextCell.GetItem();
+        
+        if (nextItem != null)
+        {
+            nextItem.TryEat();
+            if (nextItem is SnakeBodyPart)
+            {
+                Debug.Log("Dead");
+                alive = false;
+            }
+        }
+        
         if (alive)
         {
-            lockInput = true;
-            
-            CellItem nextItem = snakeHead.nextCell.GetItem();
-            if (nextItem != null) nextItem.TryEat();
-                
             // snakeHead.
             if (growRequests.Count > 0)
             {
