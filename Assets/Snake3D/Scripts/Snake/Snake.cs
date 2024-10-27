@@ -156,6 +156,26 @@ public class Snake : MonoBehaviour
         }
         
     }
+    
+    public void OnUpButtonPressed()
+    {
+        if (snakeHead.direction != Direction.Down) snakeHead.direction = Direction.Up;
+    }
+
+    public void OnDownButtonPressed()
+    {
+        if (snakeHead.direction != Direction.Up) snakeHead.direction = Direction.Down;
+    }
+
+    public void OnLeftButtonPressed()
+    {
+        if (snakeHead.direction != Direction.Right) snakeHead.direction = Direction.Left;
+    }
+
+    public void OnRightButtonPressed()
+    {
+        if (snakeHead.direction != Direction.Left) snakeHead.direction = Direction.Right;
+    }
 
     public void grow()
     {

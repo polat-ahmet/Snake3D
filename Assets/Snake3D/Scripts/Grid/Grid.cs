@@ -57,6 +57,26 @@ public class Grid : MonoBehaviour
         Fruit.OnFruitEaten -= HandleFruitEaten;
     }
     
+    public void OnUpButtonPressed()
+    {
+        snake.OnUpButtonPressed();
+    }
+
+    public void OnDownButtonPressed()
+    {
+        snake.OnDownButtonPressed();
+    }
+
+    public void OnLeftButtonPressed()
+    {
+        snake.OnLeftButtonPressed();
+    }
+
+    public void OnRightButtonPressed()
+    {
+        snake.OnRightButtonPressed();
+    }
+    
     private void HandleFruitEaten()
     {
         collectedFruit++;
