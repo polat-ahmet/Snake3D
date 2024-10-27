@@ -59,12 +59,15 @@ public class Grid : MonoBehaviour
 
     private void GenerateGrid()
     {
+        GameObject cells = new GameObject("CellsParent");
+        cells.transform.parent = transform;
+        
         for (var x = 0; x < gridWidth; x++)
         for (var z = 0; z < gridHeight; z++)
         {
             var cell = Instantiate(gridCellPrefab[(x + z) % 2], new Vector3(x, 0, z), Quaternion.identity);
             cell.name = "Cell [" + x + "," + z + "]";
-            cell.transform.parent = transform;
+            cell.transform.parent = cells.transform;
 
             cell.Init(x, z, this);
             grid[x, z] = cell;
