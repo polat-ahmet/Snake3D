@@ -29,11 +29,7 @@ public class Snake : MonoBehaviour
     private Queue<System.Action> addBodyRequests = new Queue<System.Action>();
     
     private SnakeBodyPartModel createSnakeBodyPartModel = new SnakeBodyPartModel();
-
-    private void Start()
-    {
-        
-    }
+    
     
     public void AddGrowRequest()
     {
@@ -58,6 +54,17 @@ public class Snake : MonoBehaviour
         
     }
 
+    public void StopMoving()
+    {
+     alive = false;
+    }
+    
+    public void StartMoving()
+    {
+        alive = true;
+    }
+
+    
     void ManuelUpdate()
     {
         lockInput = true;
@@ -179,8 +186,6 @@ public class Snake : MonoBehaviour
             AddBodyPartNextTo(body, snakeTail);
             snakeTail.isReadyToMove = true;
             
-
-        // }
     }
 
     public void AddTail(Cell tailCell, Direction direction)
@@ -188,7 +193,8 @@ public class Snake : MonoBehaviour
         snakeTail = CreateTailPart(tailCell, direction);
         AddBodyPartNextTo(snakeHead, snakeTail);
     }
-
+    
+    //TODO merge create snake part
     public SnakeBodyPart CreateTailPart(Cell cell, Direction direction)
     {
             SnakeBodyPart body = Instantiate(tailPrefab, transform);

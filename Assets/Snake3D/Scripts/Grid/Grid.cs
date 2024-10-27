@@ -19,6 +19,9 @@ public class Grid : MonoBehaviour
     public float tickTimer;
     private Cell[,] grid;
 
+    public int goalFruit;
+    public int collectedFruit;
+
     private void Start()
     {
         grid = new Cell[gridWidth, gridHeight];
@@ -28,12 +31,15 @@ public class Grid : MonoBehaviour
 
         TickSystem.Init();
         TickSystem.tickTimerMax = tickTimer;
-        
+
+        goalFruit = 5;
+        collectedFruit = 0;
         
         snake = Instantiate(snakePrefab, transform);
         snake.name = "Snake";
-        snake.Init(grid[0,1], grid[0,0], Direction.Left);
         
+        //TODO start grid, start direction
+        snake.Init(grid[0,1], grid[0,0], Direction.Left);
         
         
         TickSystem.OnTick += delegate(object sender, TickSystem.OnTickEventArgs args)
@@ -53,8 +59,18 @@ public class Grid : MonoBehaviour
     
     private void HandleFruitEaten()
     {
-        snake.AddGrowRequest();
-        createItemOnRandomCell(applePrefab);
+        collectedFruit++;
+        Debug.Log("Collected Fruit: " + collectedFruit + " / " + goalFruit);
+        if (collectedFruit >= goalFruit)
+        {
+            Debug.Log("You Win!");
+            snake.StopMoving();
+        }
+        else
+        {
+            snake.AddGrowRequest();
+            createItemOnRandomCell(applePrefab);
+        }
     }
 
     private void GenerateGrid()
