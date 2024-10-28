@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Grid = Snake3D.Grid.Grid;
 
 public class CameraManager : MonoBehaviour
 {

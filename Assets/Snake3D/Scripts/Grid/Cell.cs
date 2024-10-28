@@ -3,11 +3,15 @@ using JetBrains.Annotations;
 using Snake3D.Grid;
 using Unity.VisualScripting;
 using UnityEngine;
-    public class Cell : MonoBehaviour
+using Grid = Snake3D.Grid.Grid;
+
+public class Cell : MonoBehaviour
     {
         [SerializeField] private int x;
         [SerializeField] private int z;
 
+        public CellType type;
+        
         public Grid grid;
         
         public int X { get => x; }
@@ -25,6 +29,7 @@ using UnityEngine;
         
         public void Init(int x, int z, Grid grid)
         {
+            type = CellType.Normal;
             this.x = x;
             this.z = z;
             item = null;
@@ -62,5 +67,10 @@ using UnityEngine;
         public Vector3 GetItemPlacementPosition(CellItem item)
         {
             return itemPlacementPosition + item.GetItemOffset();
+        }
+
+        public void AddWall()
+        {
+            
         }
     }

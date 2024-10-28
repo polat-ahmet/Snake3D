@@ -47,7 +47,7 @@ namespace Snake3D.Game
                     tickTimer -= tickTimerMax;
                     tick++;
                     if(OnTick != null) OnTick(this, new OnTickEventArgs { tick = tick });
-                    Debug.Log("Tick");
+                    // Debug.Log("Tick");
                 }
             }
         }
