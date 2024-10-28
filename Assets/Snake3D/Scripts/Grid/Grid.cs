@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Snake3D.Game;
 using Snake3D.Item;
+using Snake3D.Sound;
 using TMPro;
 using UnityEngine;
 
@@ -32,6 +33,10 @@ namespace Snake3D.Grid
         
         [SerializeField] GameObject levelDialog;
         [SerializeField] TMP_Text levelDialogTitle;
+        
+        [SerializeField] private SoundManager soundManager;
+        [SerializeField] public AudioClip eatClip;
+        [SerializeField] public AudioClip deadClip;
 
         // public void Init(int gridWidth, int gridHeight, Cell[] gridCellPrefab, Snake.Snake snakePrefab, GameObject applePrefab, GameObject wallPrefab)
         void Start()
@@ -112,6 +117,7 @@ namespace Snake3D.Grid
     
         private void HandleFruitEaten()
         {
+            soundManager.PlaySound(eatClip);
             collectedFruit++;
             UpdateGoalText();
             Debug.Log("Collected Fruit: " + collectedFruit + " / " + goalFruit);
@@ -131,6 +137,7 @@ namespace Snake3D.Grid
 
         private void HandleSnakeDead()
         {
+            soundManager.PlaySound(deadClip);
             levelDialog.gameObject.SetActive(true);
         }
 
