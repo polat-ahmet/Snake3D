@@ -68,7 +68,6 @@ namespace Snake3D.Snake
             
                     yield return new WaitForEndOfFrame();
                 }
-            
             }
         }
     

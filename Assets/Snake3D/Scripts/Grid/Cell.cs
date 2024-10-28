@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using Snake3D.Grid;
@@ -16,6 +18,8 @@ public class Cell : MonoBehaviour
         
         public int X { get => x; }
         public int Z { get => z; }
+        
+        public Dictionary<Direction, Cell> neighbors = new Dictionary<Direction, Cell>();
 
         public Vector3 itemPlacementPosition
         {
@@ -34,6 +38,7 @@ public class Cell : MonoBehaviour
             this.z = z;
             item = null;
             this.grid = grid;
+            UpdateNeighbors();
         }
         
         public void SetItem(CellItem item)
@@ -52,10 +57,19 @@ public class Cell : MonoBehaviour
             this.item?.setCell(null);
             item = null;
         }
-        
+
+        public void UpdateNeighbors()
+        {
+            // Debug.Log("UpdateNeighbors");
+            foreach(Direction direction in Enum.GetValues(typeof(Direction)))
+            {
+                Cell cell = grid.GetNeighbourWithDirection(this, direction);
+                neighbors[direction] = cell;
+            }
+        }
         public Cell GetNeighbourWithDirection(Direction direction)
         {
-            return grid.GetNeighbourWithDirection(this, direction);
+            return neighbors[direction];
         }
 
         public void PlaceItem(CellItem item)
@@ -67,10 +81,5 @@ public class Cell : MonoBehaviour
         public Vector3 GetItemPlacementPosition(CellItem item)
         {
             return itemPlacementPosition + item.GetItemOffset();
-        }
-
-        public void AddWall()
-        {
-            
         }
     }

@@ -32,6 +32,8 @@ namespace Snake3D.Snake
         private SnakeBodyPartModel createSnakeBodyPartModel = new SnakeBodyPartModel();
     
         public HashSet<ItemType> canEatItems = new HashSet<ItemType>();
+        
+        public static event System.Action OnDead;
     
         public void AddGrowRequest()
         {
@@ -46,6 +48,7 @@ namespace Snake3D.Snake
         public void Init(Cell headCell, Cell tailCell, Direction startDirection)
         {
             canEatItems.Add(ItemType.Fruit);
+            // canEatItems.Add(ItemType.Wall);
             
             AddHead(headCell, startDirection);
             AddTail(tailCell, startDirection);
@@ -60,7 +63,11 @@ namespace Snake3D.Snake
 
         public void StopMoving()
         {
-            alive = false;
+            if (alive)
+            {
+                alive = false;
+                OnDead?.Invoke();
+            }
         }
     
         public void StartMoving()
@@ -71,14 +78,14 @@ namespace Snake3D.Snake
     
         void ManuelUpdate()
         {
+            Debug.Log("Manuel Update");
             lockInput = true;
         
             snakeHead.nextCell = snakeHead.cell.GetNeighbourWithDirection(snakeHead.direction);
             
             if (snakeHead.nextCell == null)
             {
-                Debug.Log("Dead");
-                alive = false;
+                StopMoving();
             }
             else
             {
@@ -161,22 +168,38 @@ namespace Snake3D.Snake
     
         public void OnUpButtonPressed()
         {
-            if (snakeHead.direction != Direction.Down) snakeHead.direction = Direction.Up;
+            if (!lockInput && snakeHead.direction != Direction.Down)
+            {
+                snakeHead.direction = Direction.Up;
+                lockInput = true;
+            }
         }
 
         public void OnDownButtonPressed()
         {
-            if (snakeHead.direction != Direction.Up) snakeHead.direction = Direction.Down;
+            if (!lockInput && snakeHead.direction != Direction.Up)
+            {
+                snakeHead.direction = Direction.Down;
+                lockInput = true;
+            }
         }
 
         public void OnLeftButtonPressed()
         {
-            if (snakeHead.direction != Direction.Right) snakeHead.direction = Direction.Left;
+            if (!lockInput && snakeHead.direction != Direction.Right)
+            {
+                snakeHead.direction = Direction.Left;
+                lockInput = true;
+            }
         }
 
         public void OnRightButtonPressed()
         {
-            if (snakeHead.direction != Direction.Left) snakeHead.direction = Direction.Right;
+            if (!lockInput && snakeHead.direction != Direction.Left)
+            {
+                snakeHead.direction = Direction.Right;
+                lockInput = true;
+            }
         }
 
         public void grow()

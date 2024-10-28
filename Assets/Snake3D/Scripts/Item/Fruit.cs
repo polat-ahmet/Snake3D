@@ -17,7 +17,7 @@ namespace Snake3D.Item
             Debug.Log("Yummyyy");
             OnFruitEaten?.Invoke();
             
-            Destroy(this.gameObject);
+           
         }
     }
 }

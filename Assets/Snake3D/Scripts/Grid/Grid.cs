@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Snake3D.Game;
 using Snake3D.Item;
 using TMPro;
@@ -13,6 +14,9 @@ namespace Snake3D.Grid
         [SerializeField] private Snake.Snake snakePrefab;
         [SerializeField] private GameObject applePrefab;
         [SerializeField] private GameObject wallPrefab;
+        
+        [Header("Wall Cells")]
+        public List<CellData> wallCells = new List<CellData>();
     
         public Snake.Snake snake;
 
@@ -25,9 +29,23 @@ namespace Snake3D.Grid
         public int goalFruit;
         public int collectedFruit;
         [SerializeField] TMP_Text goalText;
+        
+        [SerializeField] GameObject levelDialog;
+        [SerializeField] TMP_Text levelDialogTitle;
 
-        private void Start()
+        // public void Init(int gridWidth, int gridHeight, Cell[] gridCellPrefab, Snake.Snake snakePrefab, GameObject applePrefab, GameObject wallPrefab)
+        void Start()
         {
+            // this.gridWidth = gridWidth;
+            // this.gridHeight = gridHeight;
+            // this.gridCellPrefab = gridCellPrefab;
+            // this.snakePrefab = snakePrefab;
+            // this.applePrefab = applePrefab;
+            // this.wallPrefab = wallPrefab;
+            levelDialog.SetActive(false);
+            levelDialogTitle.text = "You Lose!";
+            
+            
             grid = new Cell[gridWidth, gridHeight];
         
             GenerateGrid();
@@ -46,22 +64,30 @@ namespace Snake3D.Grid
             //TODO start grid, start direction
             snake.Init(grid[3,3], grid[3,2], Direction.Left);
         
+            foreach (var cell in wallCells)
+            {
+                createItem(grid[cell.X, cell.Z], wallPrefab);
+                // createItemOnRandomCell(wallPrefab);
+            }
+            
             createItemOnRandomCell(applePrefab);
-            createItemOnRandomCell(wallPrefab);
         
             TickSystem.OnTick += delegate(object sender, TickSystem.OnTickEventArgs args)
             {
             };
         }
+        
     
         void OnEnable()
         {
             Fruit.OnFruitEaten += HandleFruitEaten;
+            Snake.Snake.OnDead += HandleSnakeDead;
         }
 
         void OnDisable()
         {
             Fruit.OnFruitEaten -= HandleFruitEaten;
+            Snake.Snake.OnDead -= HandleSnakeDead;
         }
     
         public void OnUpButtonPressed()
@@ -92,13 +118,20 @@ namespace Snake3D.Grid
             if (collectedFruit >= goalFruit)
             {
                 Debug.Log("You Win!");
+                levelDialogTitle.text = "You Win!";
                 snake.StopMoving();
+                
             }
             else
             {
                 snake.AddGrowRequest();
                 createItemOnRandomCell(applePrefab);
             }
+        }
+
+        private void HandleSnakeDead()
+        {
+            levelDialog.gameObject.SetActive(true);
         }
 
         private void UpdateGoalText()
@@ -118,10 +151,15 @@ namespace Snake3D.Grid
                 cell.name = "Cell [" + x + "," + z + "]";
                 cell.transform.parent = cells.transform;
 
-                cell.Init(x, z, this);
+                // cell.Init(x, z, this);
                 grid[x, z] = cell;
             }
-        
+            for (var x = 0; x < gridWidth; x++)
+            for (var z = 0; z < gridHeight; z++)
+            {
+                grid[x, z].Init(x, z, this);
+            }
+            
         }
     
 
@@ -136,7 +174,7 @@ namespace Snake3D.Grid
 
             }
         }
-    
+        
         public void createItemOnRandomCell(GameObject item)
         {
             if (IsThereAnyEmptyCell())
@@ -210,7 +248,10 @@ namespace Snake3D.Grid
             
             }
 
-            if (x >= gridWidth || x < 0 || z >= gridHeight || z < 0) return null;
+            if (x >= gridWidth || x < 0 || z >= gridHeight || z < 0)
+            {
+                return null;
+            }
 
             return grid[x, z];
         }

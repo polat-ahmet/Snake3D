@@ -28,11 +28,12 @@ namespace Snake3D.Grid
             if (canEatBySnake(snake))
             {
                 Eat(snake);
+                Destroy(this.gameObject);
             }
             else
             {
                 Debug.Log($"Can't eaten by snake: {type}");
-                snake.alive = false;
+                snake.StopMoving();
             }
         }
 
