@@ -12,9 +12,13 @@ namespace Snake3D.Grid
         public int gridWidth;
         public int gridHeight;
         public Cell[] gridCellPrefab;
+        
         [SerializeField] private Snake.Snake snakePrefab;
         [SerializeField] private GameObject applePrefab;
+        [SerializeField] private GameObject poisonPrefab;
+        [SerializeField] private GameObject bigFruitPrefab;
         [SerializeField] private GameObject wallPrefab;
+        [SerializeField] private GameObject wallBreakerPrefab;
         
         [Header("Wall Cells")]
         public List<CellData> wallCells = new List<CellData>();
@@ -76,6 +80,10 @@ namespace Snake3D.Grid
             }
             
             createItemOnRandomCell(applePrefab);
+            
+            createItemOnRandomCell(poisonPrefab);
+            
+            createItemOnRandomCell(wallBreakerPrefab);
         
             TickSystem.OnTick += delegate(object sender, TickSystem.OnTickEventArgs args)
             {
@@ -85,13 +93,16 @@ namespace Snake3D.Grid
     
         void OnEnable()
         {
-            Fruit.OnFruitEaten += HandleFruitEaten;
+            Fruit.OnFruitEaten += delegate(object sender, Fruit.OnFruitEatenArgs args)
+            {
+                HandleFruitEaten(args.amount);
+            };
+            
             Snake.Snake.OnDead += HandleSnakeDead;
         }
 
         void OnDisable()
         {
-            Fruit.OnFruitEaten -= HandleFruitEaten;
             Snake.Snake.OnDead -= HandleSnakeDead;
         }
     
@@ -115,10 +126,10 @@ namespace Snake3D.Grid
             snake.OnRightButtonPressed();
         }
     
-        private void HandleFruitEaten()
+        private void HandleFruitEaten(int amount)
         {
             soundManager.PlaySound(eatClip);
-            collectedFruit++;
+            collectedFruit += amount;
             UpdateGoalText();
             Debug.Log("Collected Fruit: " + collectedFruit + " / " + goalFruit);
             if (collectedFruit >= goalFruit)

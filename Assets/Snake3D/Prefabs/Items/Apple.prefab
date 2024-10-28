@@ -97,3 +97,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cell: {fileID: 0}
+  itemOffsetY: {x: 0, y: 0, z: 0}
+  type: 0

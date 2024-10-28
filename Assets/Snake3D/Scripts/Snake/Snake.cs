@@ -78,7 +78,6 @@ namespace Snake3D.Snake
     
         void ManuelUpdate()
         {
-            Debug.Log("Manuel Update");
             lockInput = true;
         
             snakeHead.nextCell = snakeHead.cell.GetNeighbourWithDirection(snakeHead.direction);

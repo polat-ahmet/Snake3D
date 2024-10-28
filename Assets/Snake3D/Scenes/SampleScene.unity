@@ -1229,7 +1229,7 @@ GameObject:
   - component: {fileID: 1107622614}
   - component: {fileID: 1107622613}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Next Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1435,7 +1435,10 @@ MonoBehaviour:
   - {fileID: 4549241637217479182, guid: f4ea284e9b7b4445d90d2be35e21a2cc, type: 3}
   snakePrefab: {fileID: 52206997310768453, guid: c8f08f04353774f0b94bd3abd2d41fc7, type: 3}
   applePrefab: {fileID: 5281141693023575218, guid: c92ef4478cdd24d838b39658e7df118e, type: 3}
+  poisonPrefab: {fileID: 5922346470818244612, guid: cf5578127440b48e684dfc985ec50015, type: 3}
+  bigFruitPrefab: {fileID: 0}
   wallPrefab: {fileID: 4699561607158382178, guid: f9a766cfd5fb146c4b603279c386cc48, type: 3}
+  wallBreakerPrefab: {fileID: 6960141851372353969, guid: 48a683a2517da4e0c93e60acdc326922, type: 3}
   wallCells:
   - X: 14
     Z: 11
@@ -1472,6 +1475,11 @@ MonoBehaviour:
   goalFruit: 0
   collectedFruit: 0
   goalText: {fileID: 1717737301}
+  levelDialog: {fileID: 1723414771}
+  levelDialogTitle: {fileID: 88231254}
+  soundManager: {fileID: 1426165519}
+  eatClip: {fileID: 8300000, guid: eed725d71e39d4909a2f547dc97cc48e, type: 3}
+  deadClip: {fileID: 8300000, guid: a27c0d59f66d543f6838ac3368e425fd, type: 3}
 --- !u!4 &1301987904
 Transform:
   m_ObjectHideFlags: 0
@@ -1771,6 +1779,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1426165518}
   - component: {fileID: 1426165517}
+  - component: {fileID: 1426165519}
+  - component: {fileID: 1426165520}
   m_Layer: 0
   m_Name: CameraManager
   m_TagString: Untagged
@@ -1808,6 +1818,115 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1426165519
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1426165516}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 414aceca76ba4940b22175884127a338, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SoundSource: {fileID: 1426165520}
+--- !u!82 &1426165520
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1426165516}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!4 &1524724358 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2761777428348918196, guid: 0c6509e0d061246489d7449608baa8f4, type: 3}
@@ -2294,6 +2413,7 @@ GameObject:
   - component: {fileID: 1823358409}
   - component: {fileID: 1823358408}
   - component: {fileID: 1823358407}
+  - component: {fileID: 1823358411}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -2385,6 +2505,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1823358411
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1823358406}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15642e8665354041ba72f3d966dd91db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1840829295
 GameObject:
   m_ObjectHideFlags: 0
@@ -2542,7 +2674,7 @@ GameObject:
   - component: {fileID: 2029223269}
   - component: {fileID: 2029223268}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: Restart Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2612,7 +2744,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2029223269}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1823358411}
+        m_TargetAssemblyTypeName: Snake3D.UI.UIManager, Assembly-CSharp
+        m_MethodName: ReloadScene
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2029223269
 MonoBehaviour:
   m_ObjectHideFlags: 0
