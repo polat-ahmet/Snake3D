@@ -209,7 +209,7 @@ namespace Snake3D.Snake
             Cell cell = createSnakeBodyPartModel.cell;
             Direction direction = createSnakeBodyPartModel.direction;
             
-            SnakeBodyPart body = CreateBodyPart(cell, direction);
+            SnakeBodyPart body = CreateBodyPart(cell, direction, bodyPrefab, "Body");
             AddBodyPartNextTo(lastBodyPart, body);
             AddBodyPartNextTo(body, snakeTail);
             snakeTail.isReadyToMove = true;
@@ -218,24 +218,13 @@ namespace Snake3D.Snake
 
         public void AddTail(Cell tailCell, Direction direction)
         {
-            snakeTail = CreateTailPart(tailCell, direction);
+            snakeTail = CreateBodyPart(tailCell, direction, tailPrefab, "Tail");
             AddBodyPartNextTo(snakeHead, snakeTail);
         }
-    
-        //TODO merge create snake part
-        public SnakeBodyPart CreateTailPart(Cell cell, Direction direction)
+        public SnakeBodyPart CreateBodyPart(Cell cell, Direction direction, SnakeBodyPart prefab, string name)
         {
-            SnakeBodyPart body = Instantiate(tailPrefab, transform);
-            body.name = "Tail";
-            body.transform.parent = transform;
-            body.transform.localPosition = cell.GetItemPlacementPosition(body);
-            body.Init(cell, direction);
-            return body;
-        }
-        public SnakeBodyPart CreateBodyPart(Cell cell, Direction direction)
-        {
-            SnakeBodyPart body = Instantiate(bodyPrefab, transform);
-            body.name = "Body";
+            SnakeBodyPart body = Instantiate(prefab, transform);
+            body.name = name;
             body.transform.parent = transform;
             body.transform.localPosition = cell.GetItemPlacementPosition(body);
             body.Init(cell, direction);
@@ -246,15 +235,7 @@ namespace Snake3D.Snake
         {
             if (snakeHead == null)
             {
-                //TODO remove object pool
-                snakeHead = Instantiate(headPrefab, transform);
-                snakeHead.name = "Head";
-                // snakeHead.itemOffset = new Vector3(0, -.25f, 0.15f);
-            
-                snakeHead.transform.parent = transform;
-            
-                snakeHead.transform.localPosition = headCell.GetItemPlacementPosition(snakeHead);
-                snakeHead.Init(headCell, direction);
+                snakeHead = CreateBodyPart(headCell, direction, headPrefab, "Head");
             }
         }
     
