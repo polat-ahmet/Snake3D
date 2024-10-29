@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Snake3D.Sound
@@ -5,7 +6,12 @@ namespace Snake3D.Sound
     public class SoundManager : MonoBehaviour
     {
         [SerializeField] public AudioSource SoundSource;
-        
+
+        private void Awake()
+        {
+            DontDestroyOnLoad(this.gameObject);
+        }
+
         public void SetClip(AudioClip clip)
         {
             SoundSource.clip = clip;

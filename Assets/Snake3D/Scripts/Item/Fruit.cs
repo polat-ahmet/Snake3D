@@ -25,8 +25,6 @@ namespace Snake3D.Item
         {
             Debug.Log("Yummyyy");
             if(OnFruitEaten != null) OnFruitEaten(this, new OnFruitEatenArgs { amount = this.amount });
-            
-           
         }
     }
 }

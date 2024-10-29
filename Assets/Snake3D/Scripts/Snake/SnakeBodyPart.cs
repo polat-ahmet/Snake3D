@@ -21,16 +21,10 @@ namespace Snake3D.Snake
         {
             itemOffsetY = new Vector3(0, -.25f, 0);
         }
-
-        // public Vector3 GetItemOffset()
-        // {
-        //     
-        // }
-
+        
         public void Init(Cell cell, Direction direction)
         {
             base.Init(cell, ItemType.SnakeBodyPart);
-            // cell.SetItem(this);
             this.direction = direction;
             nextCell = cell.GetNeighbourWithDirection(direction);
         }
@@ -52,7 +46,7 @@ namespace Snake3D.Snake
                 Vector3 startPos = transform.localPosition;
                 Vector3 endPos = nextCell.GetItemPlacementPosition(this);
         
-                transform.rotation =  Quaternion.Euler(getRotationVector(direction));
+                transform.rotation =  Quaternion.Euler(DirectionUtil.getRotationVector(direction));
         
                 nextCell = cell.GetNeighbourWithDirection(direction);
             
@@ -70,57 +64,6 @@ namespace Snake3D.Snake
                 }
             }
         }
-    
-        //TODO move snake movement
-        public Vector3 getDirectionVector()
-        {
-            switch (direction)
-            {
-                case Direction.Left:
-                    return Vector3.forward;
-                case Direction.Right:
-                    return Vector3.back;
-                case Direction.Up:
-                    return Vector3.right;
-                case Direction.Down:
-                    return Vector3.left;
-                default:
-                    return Vector3.zero;
-            }
-        }
-    
-        //TODO move snake movement
-        public Vector3 getRotationVector(Direction direction)
-        {
-            switch (direction)
-            {
-                case Direction.Left:
-                    return new Vector3(0, 0, 0);
-                case Direction.Right:
-                    return new Vector3(0, 180, 0);
-                case Direction.Up:
-                    return new Vector3(0, 90, 0);
-                case Direction.Down:
-                    return new Vector3(0, 270, 0);
-                default:
-                    return Vector3.zero;
-            }
-        }
-        public Direction GetReverseDirection()
-        {
-            switch (direction)
-            {
-                case Direction.Left:
-                    return Direction.Right;
-                case Direction.Right:
-                    return Direction.Left;
-                case Direction.Up:
-                    return Direction.Down;
-                case Direction.Down:
-                    return Direction.Up;
-                default:
-                    return Direction.Left;
-            }
-        }
+       
     }
 }

@@ -14,11 +14,11 @@ namespace Snake3D.Grid
         public Cell[] gridCellPrefab;
         
         [SerializeField] private Snake.Snake snakePrefab;
-        [SerializeField] private GameObject applePrefab;
-        [SerializeField] private GameObject poisonPrefab;
-        [SerializeField] private GameObject bigFruitPrefab;
-        [SerializeField] private GameObject wallPrefab;
-        [SerializeField] private GameObject wallBreakerPrefab;
+        [SerializeField] private CellItem applePrefab;
+        [SerializeField] private CellItem poisonPrefab;
+        [SerializeField] private CellItem bigFruitPrefab;
+        [SerializeField] private CellItem wallPrefab;
+        [SerializeField] private CellItem wallBreakerPrefab;
         
         [Header("Wall Cells")]
         public List<CellData> wallCells = new List<CellData>();
@@ -42,15 +42,17 @@ namespace Snake3D.Grid
         [SerializeField] public AudioClip eatClip;
         [SerializeField] public AudioClip deadClip;
 
-        // public void Init(int gridWidth, int gridHeight, Cell[] gridCellPrefab, Snake.Snake snakePrefab, GameObject applePrefab, GameObject wallPrefab)
         void Start()
         {
-            // this.gridWidth = gridWidth;
-            // this.gridHeight = gridHeight;
-            // this.gridCellPrefab = gridCellPrefab;
-            // this.snakePrefab = snakePrefab;
-            // this.applePrefab = applePrefab;
-            // this.wallPrefab = wallPrefab;
+            Init();
+            
+        }
+
+        public void Init()
+        {
+            DestroyAllChildGameObjects();
+
+            
             levelDialog.SetActive(false);
             levelDialogTitle.text = "You Lose!";
             
@@ -67,30 +69,43 @@ namespace Snake3D.Grid
             collectedFruit = 0;
             UpdateGoalText();
         
-            snake = Instantiate(snakePrefab, transform);
-            snake.name = "Snake";
-        
-            //TODO start grid, start direction
-            snake.Init(grid[3,3], grid[3,2], Direction.Left);
-        
-            foreach (var cell in wallCells)
-            {
-                createItem(grid[cell.X, cell.Z], wallPrefab);
-                // createItemOnRandomCell(wallPrefab);
-            }
+            InitializeSnake();
+
+            CreateWallItem();
             
             createItemOnRandomCell(applePrefab);
             
             createItemOnRandomCell(poisonPrefab);
             
             createItemOnRandomCell(wallBreakerPrefab);
-        
-            TickSystem.OnTick += delegate(object sender, TickSystem.OnTickEventArgs args)
-            {
-            };
         }
+
+        private void DestroyAllChildGameObjects()
+        {
+            foreach (Transform child in transform)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+
+        private void CreateWallItem()
+        {
+            foreach (var cell in wallCells)
+            {
+                createItem(grid[cell.X, cell.Z], wallPrefab);
+            }
+        }
+
+        private void InitializeSnake()
+        {
+            snake = Instantiate(snakePrefab, transform);
+            snake.name = "Snake";
         
-    
+            //TODO start grid, start direction
+            snake.Init(grid[3,3], grid[3,2], Direction.Left);
+        }
+
+
         void OnEnable()
         {
             Fruit.OnFruitEaten += delegate(object sender, Fruit.OnFruitEatenArgs args)
@@ -108,22 +123,22 @@ namespace Snake3D.Grid
     
         public void OnUpButtonPressed()
         {
-            snake.OnUpButtonPressed();
+            snake.ChangeDirection(Direction.Up);
         }
 
         public void OnDownButtonPressed()
         {
-            snake.OnDownButtonPressed();
+            snake.ChangeDirection(Direction.Down);
         }
 
         public void OnLeftButtonPressed()
         {
-            snake.OnLeftButtonPressed();
+            snake.ChangeDirection(Direction.Left);
         }
 
         public void OnRightButtonPressed()
         {
-            snake.OnRightButtonPressed();
+            snake.ChangeDirection(Direction.Right);
         }
     
         private void HandleFruitEaten(int amount)
@@ -131,13 +146,12 @@ namespace Snake3D.Grid
             soundManager.PlaySound(eatClip);
             collectedFruit += amount;
             UpdateGoalText();
-            Debug.Log("Collected Fruit: " + collectedFruit + " / " + goalFruit);
+            
             if (collectedFruit >= goalFruit)
             {
                 Debug.Log("You Win!");
                 levelDialogTitle.text = "You Win!";
                 snake.StopMoving();
-                
             }
             else
             {
@@ -177,23 +191,24 @@ namespace Snake3D.Grid
             {
                 grid[x, z].Init(x, z, this);
             }
+            cells.transform.localPosition = Vector3.zero;
             
         }
     
 
-        public void createItem(Cell cell, GameObject item)
+        public void createItem(Cell cell, CellItem item)
         {
             if (IsCellEmpty(cell))
             {
-                GameObject itemObject = Instantiate(item, transform);
+                CellItem itemObject = Instantiate(item, transform);
                 itemObject.name = "Apple";
 
-                cell.PlaceItem(itemObject.GetComponent<CellItem>());
+                cell.PlaceItem(itemObject);
 
             }
         }
         
-        public void createItemOnRandomCell(GameObject item)
+        public void createItemOnRandomCell(CellItem item)
         {
             if (IsThereAnyEmptyCell())
             {
