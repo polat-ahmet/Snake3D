@@ -22,16 +22,20 @@ namespace Snake3D.Grid
         
         [Header("Wall Cells")]
         public List<CellData> wallCells = new List<CellData>();
+        
+        [Header("Snake Cells")]
+        public CellData snakeHeadStartPosition = new CellData(0, 1);
+        public CellData snakeTailStartPosition = new CellData(0, 0);
+        public Direction snakeStartDirection = Direction.Left;
     
-        public Snake.Snake snake;
+        private Snake.Snake snake;
 
         public Vector3 gridOffset = Vector3.zero;
-        public Vector3 itemOffset = Vector3.up;
 
         public float tickTimer;
         private Cell[,] grid;
 
-        public int goalFruit;
+        [SerializeField] public int goalFruit = 5;
         public int collectedFruit;
         [SerializeField] TMP_Text goalText;
         
@@ -64,8 +68,7 @@ namespace Snake3D.Grid
 
             TickSystem.Init();
             TickSystem.tickTimerMax = tickTimer;
-
-            goalFruit = 5;
+            
             collectedFruit = 0;
             UpdateGoalText();
         
@@ -100,9 +103,8 @@ namespace Snake3D.Grid
         {
             snake = Instantiate(snakePrefab, transform);
             snake.name = "Snake";
-        
-            //TODO start grid, start direction
-            snake.Init(grid[3,3], grid[3,2], Direction.Left);
+            
+            snake.Init(grid[snakeHeadStartPosition.X,snakeHeadStartPosition.Z], grid[snakeTailStartPosition.X,snakeTailStartPosition.Z], snakeStartDirection);
         }
 
 
@@ -110,7 +112,7 @@ namespace Snake3D.Grid
         {
             Fruit.OnFruitEaten += delegate(object sender, Fruit.OnFruitEatenArgs args)
             {
-                HandleFruitEaten(args.amount);
+                HandleFruitEaten(args.amount, args.fruit);
             };
             
             Snake.Snake.OnDead += HandleSnakeDead;
@@ -141,12 +143,19 @@ namespace Snake3D.Grid
             snake.ChangeDirection(Direction.Right);
         }
     
-        private void HandleFruitEaten(int amount)
+        private void HandleFruitEaten(int amount, CellItem fruit)
         {
             soundManager.PlaySound(eatClip);
             collectedFruit += amount;
-            UpdateGoalText();
             
+            if (collectedFruit < 0)
+            {
+                snake.StopMoving();
+                collectedFruit = 0;
+            }
+            
+            UpdateGoalText();
+
             if (collectedFruit >= goalFruit)
             {
                 Debug.Log("You Win!");
@@ -156,7 +165,7 @@ namespace Snake3D.Grid
             else
             {
                 snake.AddGrowRequest();
-                createItemOnRandomCell(applePrefab);
+                createItemOnRandomCell(fruit);
             }
         }
 

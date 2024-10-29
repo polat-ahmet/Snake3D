@@ -9,6 +9,7 @@ namespace Snake3D.Item
         public class OnFruitEatenArgs : EventArgs
         {
             public int amount;
+            public CellItem fruit;
         }
         
         public static event EventHandler<OnFruitEatenArgs> OnFruitEaten;
@@ -24,7 +25,7 @@ namespace Snake3D.Item
         public override void Eat(Snake.Snake snake)
         {
             Debug.Log("Yummyyy");
-            if(OnFruitEaten != null) OnFruitEaten(this, new OnFruitEatenArgs { amount = this.amount });
+            if(OnFruitEaten != null) OnFruitEaten(this, new OnFruitEatenArgs { amount = this.amount, fruit = this });
         }
     }
 }
