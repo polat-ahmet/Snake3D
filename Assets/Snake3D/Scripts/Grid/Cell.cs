@@ -50,7 +50,6 @@ namespace Snake3D.Grid
 
         private void UpdateNeighbors()
         {
-            // Debug.Log("UpdateNeighbors");
             foreach (Direction direction in Enum.GetValues(typeof(Direction)))
             {
                 var cell = grid.GetNeighbourWithDirection(this, direction);

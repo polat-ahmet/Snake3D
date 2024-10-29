@@ -11,7 +11,7 @@ namespace Snake3D.Item
             type = ItemType.Wall;
         }
 
-        public override void Eat(Snake.Snake snake)
+        protected override void Eat(Snake.Snake snake)
         {
             Debug.Log("Wall");
         }

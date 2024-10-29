@@ -17,7 +17,7 @@ namespace Snake3D.Item
 
         public static event EventHandler<OnFruitEatenArgs> OnFruitEaten;
 
-        public override void Eat(Snake.Snake snake)
+        protected override void Eat(Snake.Snake snake)
         {
             Debug.Log("Yummyyy");
             if (OnFruitEaten != null) OnFruitEaten(this, new OnFruitEatenArgs { amount = amount, fruit = this });

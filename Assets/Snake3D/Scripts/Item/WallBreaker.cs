@@ -11,7 +11,7 @@ namespace Snake3D.Item
             type = ItemType.Fruit;
         }
 
-        public override void Eat(Snake.Snake snake)
+        protected override void Eat(Snake.Snake snake)
         {
             snake.canEatItems.Add(ItemType.Wall);
         }

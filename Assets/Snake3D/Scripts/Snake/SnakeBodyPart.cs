@@ -28,7 +28,8 @@ namespace Snake3D.Snake
             this.direction = direction;
             nextCell = cell.GetNeighbourWithDirection(direction);
         }
-        public override void Eat(Snake snake)
+
+        protected override void Eat(Snake snake)
         {
             Debug.Log("You can't eat your body!");
         }

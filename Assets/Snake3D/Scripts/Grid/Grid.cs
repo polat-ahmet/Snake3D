@@ -27,8 +27,6 @@ namespace Snake3D.Grid
         public CellData snakeTailStartPosition = new(0, 0);
         public Direction snakeStartDirection = Direction.Left;
 
-        public Vector3 gridOffset = Vector3.zero;
-
         public float tickTimer;
 
         [SerializeField] public int goalFruit = 5;
@@ -245,7 +243,7 @@ namespace Snake3D.Grid
         {
             // Calculate the center based on grid size
             var centerPosition = new Vector3((gridWidth - 1) / 2.0f, 0, (gridHeight - 1) / 2.0f);
-            transform.position = -centerPosition + gridOffset; // Move the grid so it's centered
+            transform.position = -centerPosition; // Move the grid so it's centered
         }
 
         public Cell GetNeighbourWithDirection(Cell cell, Direction direction)

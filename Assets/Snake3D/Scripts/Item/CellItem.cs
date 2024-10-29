@@ -14,7 +14,7 @@ namespace Snake3D.Item
             this.cell = cell;
         }
 
-        public void Init(Cell cell, ItemType type)
+        protected void Init(Cell cell, ItemType type)
         {
             this.cell = cell;
             this.type = type;
@@ -36,13 +36,13 @@ namespace Snake3D.Item
             }
         }
 
-        public bool canEatBySnake(Snake.Snake snake)
+        private bool canEatBySnake(Snake.Snake snake)
         {
             if (snake.canEatItems.Contains(type)) return true;
             return false;
         }
 
-        public abstract void Eat(Snake.Snake snake);
+        protected abstract void Eat(Snake.Snake snake);
 
         public Vector3 GetItemOffset()
         {

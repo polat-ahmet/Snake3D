@@ -847,38 +847,23 @@ MonoBehaviour:
   wallBreakerPrefab: {fileID: 151245449811566159, guid: 48a683a2517da4e0c93e60acdc326922, type: 3}
   wallCells:
   - X: 14
-    Z: 10
-  - X: 14
-    Z: 9
-  - X: 14
-    Z: 8
-  - X: 14
-    Z: 7
-  - X: 14
-    Z: 6
-  - X: 14
-    Z: 5
-  - X: 14
-    Z: 4
-  - X: 14
-    Z: 3
-  - X: 14
-    Z: 2
-  - X: 14
-    Z: 1
-  - X: 14
     Z: 0
   - X: 13
-    Z: 0
+    Z: 1
   - X: 12
-    Z: 0
+    Z: 2
   - X: 11
+    Z: 3
+  snakeHeadStartPosition:
+    X: 0
+    Z: 1
+  snakeTailStartPosition:
+    X: 0
     Z: 0
-  snake: {fileID: 0}
+  snakeStartDirection: 2
   gridOffset: {x: 0, y: 0, z: 0}
-  itemOffset: {x: 0, y: 1, z: 0}
   tickTimer: 0.5
-  goalFruit: 0
+  goalFruit: 10
   collectedFruit: 0
   goalText: {fileID: 1717737301}
   levelDialog: {fileID: 1723414771}
@@ -1368,7 +1353,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1723414772
 RectTransform:
   m_ObjectHideFlags: 0
