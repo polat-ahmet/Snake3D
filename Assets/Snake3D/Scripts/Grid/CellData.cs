@@ -1,16 +1,17 @@
+using System;
+
 namespace Snake3D.Grid
 {
-    [System.Serializable]
+    [Serializable]
     public class CellData
     {
-            public int X;
-            public int Z;
-    
-            public CellData(int x, int z)
-            {
-                X = x;
-                Z = z;
-            }
-   
+        public int X;
+        public int Z;
+
+        public CellData(int x, int z)
+        {
+            X = x;
+            Z = z;
+        }
     }
 }

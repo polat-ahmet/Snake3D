@@ -40,30 +40,32 @@ namespace Snake3D.Snake
                 nextCell = cell.GetNeighbourWithDirection(direction);
         
                 cell.RemoveItem();
-        
                 nextCell.SetItem(this);
         
                 Vector3 startPos = transform.localPosition;
                 Vector3 endPos = nextCell.GetItemPlacementPosition(this);
         
-                transform.rotation =  Quaternion.Euler(DirectionUtil.getRotationVector(direction));
+                transform.rotation =  Quaternion.Euler(DirectionUtil.GetRotationVector(direction));
         
                 nextCell = cell.GetNeighbourWithDirection(direction);
-            
                 direction = nextDirection;
 
-                var elapsedTime = 0f;
-                while (elapsedTime < TickSystem.tickTimerMax)
-                {
-           
-                    elapsedTime += Time.deltaTime;
-                
-                    transform.localPosition = Vector3.Lerp(startPos, endPos, elapsedTime/TickSystem.tickTimerMax);
-            
-                    yield return new WaitForEndOfFrame();
-                }
+                yield return InterpolateSnakeMovement(startPos, endPos);
             }
         }
-       
+
+        private IEnumerator InterpolateSnakeMovement(Vector3 startPos, Vector3 endPos)
+        {
+            var elapsedTime = 0f;
+            while (elapsedTime < TickSystem.tickTimerMax)
+            {
+           
+                elapsedTime += Time.deltaTime;
+                
+                transform.localPosition = Vector3.Lerp(startPos, endPos, elapsedTime/TickSystem.tickTimerMax);
+            
+                yield return new WaitForEndOfFrame();
+            }
+        }
     }
 }

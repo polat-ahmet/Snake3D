@@ -4,7 +4,6 @@ namespace Snake3D.Item
     {
         SnakeBodyPart,
         Fruit,
-        Wall,
-        Portal,
+        Wall
     }
 }

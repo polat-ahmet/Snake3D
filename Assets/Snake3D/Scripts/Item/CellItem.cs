@@ -1,20 +1,19 @@
-using Snake3D.Item;
+using Snake3D.Grid;
 using UnityEngine;
-using Snake3D.Snake;
 
-namespace Snake3D.Grid
+namespace Snake3D.Item
 {
     public abstract class CellItem : MonoBehaviour
     {
         public Cell cell;
         public Vector3 itemOffsetY;
         public ItemType type;
-        
+
         public void setCell(Cell cell)
         {
             this.cell = cell;
         }
-        
+
         public void Init(Cell cell, ItemType type)
         {
             this.cell = cell;
@@ -28,7 +27,7 @@ namespace Snake3D.Grid
             if (canEatBySnake(snake))
             {
                 Eat(snake);
-                Destroy(this.gameObject);
+                Destroy(gameObject);
             }
             else
             {
@@ -42,12 +41,12 @@ namespace Snake3D.Grid
             if (snake.canEatItems.Contains(type)) return true;
             return false;
         }
-        
+
         public abstract void Eat(Snake.Snake snake);
 
         public Vector3 GetItemOffset()
         {
-            return this.itemOffsetY;
+            return itemOffsetY;
         }
     }
 }

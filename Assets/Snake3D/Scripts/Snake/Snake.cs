@@ -37,7 +37,7 @@ namespace Snake3D.Snake
     
         public void AddGrowRequest()
         {
-            growRequests.Enqueue(() => grow());
+            growRequests.Enqueue(() => Grow());
         }
     
         public void AddBodyRequest()
@@ -185,7 +185,7 @@ namespace Snake3D.Snake
             }
         }
 
-        public void grow()
+        private void Grow()
         {
             snakeTail.isReadyToMove = false;
             SnakeBodyPart lastBodyPart = snakeTail.beforePart;
@@ -196,13 +196,13 @@ namespace Snake3D.Snake
             AddBodyRequest();
         }
 
-        public void AddBodyPartNextTo(SnakeBodyPart beforePart, SnakeBodyPart afterPart)
+        private void AddBodyPartNextTo(SnakeBodyPart beforePart, SnakeBodyPart afterPart)
         {
             beforePart.afterPart = afterPart;
             afterPart.beforePart = beforePart;
         }
 
-        public void AddBodyPart()
+        private void AddBodyPart()
         {
             SnakeBodyPart lastBodyPart = snakeTail.beforePart;
             
@@ -216,12 +216,21 @@ namespace Snake3D.Snake
             
         }
 
-        public void AddTail(Cell tailCell, Direction direction)
+        private void AddTail(Cell tailCell, Direction direction)
         {
             snakeTail = CreateBodyPart(tailCell, direction, tailPrefab, "Tail");
             AddBodyPartNextTo(snakeHead, snakeTail);
         }
-        public SnakeBodyPart CreateBodyPart(Cell cell, Direction direction, SnakeBodyPart prefab, string name)
+        
+        private void AddHead(Cell headCell, Direction direction)
+        {
+            if (snakeHead == null)
+            {
+                snakeHead = CreateBodyPart(headCell, direction, headPrefab, "Head");
+            }
+        }
+
+        private SnakeBodyPart CreateBodyPart(Cell cell, Direction direction, SnakeBodyPart prefab, string name)
         {
             SnakeBodyPart body = Instantiate(prefab, transform);
             body.name = name;
@@ -231,13 +240,7 @@ namespace Snake3D.Snake
             return body;
         }
 
-        public void AddHead(Cell headCell, Direction direction)
-        {
-            if (snakeHead == null)
-            {
-                snakeHead = CreateBodyPart(headCell, direction, headPrefab, "Head");
-            }
-        }
+        
     
     }
 }

@@ -1,32 +1,32 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Grid = Snake3D.Grid.Grid;
 
-public class CameraManager : MonoBehaviour
+namespace Snake3D
 {
-    public Transform targetGrid;
-    public Camera mainCamera;
-    public float aspectRatioPadding = 2f;
- 
-    void Start()
+    public class CameraManager : MonoBehaviour
     {
-        AdjustCameraSize();
-    }
+        public Transform targetGrid;
+        public Camera mainCamera;
+        public float aspectRatioPadding = 2f;
 
-    void AdjustCameraSize()
-    {
-        Grid gridManager = targetGrid.GetComponent<Grid>();
-        if (gridManager == null) return;
-        
-        float gridWidth = gridManager.gridWidth;
-        float gridHeight = gridManager.gridHeight;
-        
-        float aspectRatio = (float)Screen.width / (float)Screen.height;
-        
-        float verticalSize = (float)gridHeight / 2f + (float)aspectRatioPadding;
-        float horizontalSize = ((float) gridWidth / 2f + (float) aspectRatioPadding) / aspectRatio;
-        
-        mainCamera.orthographicSize = Mathf.Max(verticalSize, horizontalSize);
+        private void Start()
+        {
+            AdjustCameraSize();
+        }
+
+        private void AdjustCameraSize()
+        {
+            var gridManager = targetGrid.GetComponent<Grid.Grid>();
+            if (gridManager == null) return;
+
+            float gridWidth = gridManager.gridWidth;
+            float gridHeight = gridManager.gridHeight;
+
+            var aspectRatio = Screen.width / (float)Screen.height;
+
+            var verticalSize = gridHeight / 2f + aspectRatioPadding;
+            var horizontalSize = (gridWidth / 2f + aspectRatioPadding) / aspectRatio;
+
+            mainCamera.orthographicSize = Mathf.Max(verticalSize, horizontalSize);
+        }
     }
 }

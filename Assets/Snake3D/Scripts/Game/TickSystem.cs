@@ -5,16 +5,11 @@ namespace Snake3D.Game
 {
     public class TickSystem
     {
-        public class OnTickEventArgs : EventArgs
-        {
-            public int tick;
-        }
-        
-        public static event EventHandler<OnTickEventArgs> OnTick;
-
         public static float tickTimerMax = 1f;
         private static GameObject tickSystemObject;
         private static int tick;
+
+        public static event EventHandler<OnTickEventArgs> OnTick;
 
         public static void Init()
         {
@@ -29,7 +24,12 @@ namespace Snake3D.Game
         {
             return tick;
         }
-        
+
+        public class OnTickEventArgs : EventArgs
+        {
+            public int tick;
+        }
+
         private class TickSystemObject : MonoBehaviour
         {
             private float tickTimer;
@@ -46,7 +46,7 @@ namespace Snake3D.Game
                 {
                     tickTimer -= tickTimerMax;
                     tick++;
-                    if(OnTick != null) OnTick(this, new OnTickEventArgs { tick = tick });
+                    if (OnTick != null) OnTick(this, new OnTickEventArgs { tick = tick });
                     // Debug.Log("Tick");
                 }
             }

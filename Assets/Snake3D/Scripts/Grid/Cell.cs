@@ -1,50 +1,40 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
-using Snake3D.Grid;
-using Unity.VisualScripting;
+using Snake3D.Item;
 using UnityEngine;
-using Grid = Snake3D.Grid.Grid;
 
-public class Cell : MonoBehaviour
+namespace Snake3D.Grid
+{
+    public class Cell : MonoBehaviour
     {
         [SerializeField] private int x;
         [SerializeField] private int z;
 
-        public CellType type;
-        
         public Grid grid;
-        
-        public int X { get => x; }
-        public int Z { get => z; }
-        
-        public Dictionary<Direction, Cell> neighbors = new Dictionary<Direction, Cell>();
-
-        public Vector3 itemPlacementPosition
-        {
-            get
-            {
-                return transform.localPosition + Vector3.up;
-            }
-        }
 
         [CanBeNull] private CellItem item;
-        
+
+        private readonly Dictionary<Direction, Cell> neighbors = new();
+
+        public int X => x;
+        public int Z => z;
+
+        private Vector3 itemPlacementPosition => transform.localPosition + Vector3.up;
+
         public void Init(int x, int z, Grid grid)
         {
-            type = CellType.Normal;
             this.x = x;
             this.z = z;
             item = null;
             this.grid = grid;
             UpdateNeighbors();
         }
-        
-        public void SetItem(CellItem item)
+
+        public void SetItem(CellItem tempItem)
         {
-            this.item = item;
-            this.item?.setCell(this);
+            item = tempItem;
+            item?.setCell(this);
         }
 
         public CellItem GetItem()
@@ -54,32 +44,34 @@ public class Cell : MonoBehaviour
 
         public void RemoveItem()
         {
-            this.item?.setCell(null);
+            item?.setCell(null);
             item = null;
         }
 
-        public void UpdateNeighbors()
+        private void UpdateNeighbors()
         {
             // Debug.Log("UpdateNeighbors");
-            foreach(Direction direction in Enum.GetValues(typeof(Direction)))
+            foreach (Direction direction in Enum.GetValues(typeof(Direction)))
             {
-                Cell cell = grid.GetNeighbourWithDirection(this, direction);
+                var cell = grid.GetNeighbourWithDirection(this, direction);
                 neighbors[direction] = cell;
             }
         }
+
         public Cell GetNeighbourWithDirection(Direction direction)
         {
             return neighbors[direction];
         }
 
-        public void PlaceItem(CellItem item)
+        public void PlaceItem(CellItem tempItem)
         {
-            item.transform.localPosition = GetItemPlacementPosition(item);
-            SetItem(item);
+            tempItem.transform.localPosition = GetItemPlacementPosition(tempItem);
+            SetItem(tempItem);
         }
 
-        public Vector3 GetItemPlacementPosition(CellItem item)
+        public Vector3 GetItemPlacementPosition(CellItem tempItem)
         {
-            return itemPlacementPosition + item.GetItemOffset();
+            return itemPlacementPosition + tempItem.GetItemOffset();
         }
     }
+}
